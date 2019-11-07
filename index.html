@@ -6,7 +6,26 @@
     <link rel="stylesheet" href="app.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
-<body>
+<body id="app">
+
+<div id="fullscreen" class="show">
+    <button>
+        Нажми <br> меня
+    </button>
+</div>
+
+<div id="player">
+    <button id="play" class="show">
+        <img src="assets/images/play-button.svg" alt="Play">
+    </button>
+    <button id="stop">
+        <img src="assets/images/stop-button.svg" alt="Stop">
+    </button>
+</div>
+
+
+
+
 
 <div id="welcome-screen" class="show">
 
@@ -14,9 +33,8 @@
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi assumenda consequatur consequuntur, distinctio doloribus enim error ipsum libero minima natus nisi odio omnis perspiciatis, quae quia reiciendis sapiente sed sunt.
     </p>
 
-    <button id="start">
-        Go
-    </button>
+    <img src="assets/images/gift.svg" alt="Подарок">
+
 
 </div>
 
@@ -25,7 +43,10 @@
 </div>
 
 <div id="message">
-    message
+    <div class="message">
+        Message
+    </div>
+    <button id="message-ok">ok</button>
 </div>
 
 <div id="hint">
@@ -36,7 +57,7 @@
 
     <p id="text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa, esse eum explicabo fuga, itaque magni possimus quam quia quis repellendus sequi ut, veniam? Dignissimos error excepturi labore magnam vero voluptatum?</p>
 
-    <input type="text" id="answer-input">
+    <input type="number" id="answer-input">
 
     <button id="answer-btn">Button</button>
 

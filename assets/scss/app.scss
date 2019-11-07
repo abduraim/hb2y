@@ -7,6 +7,10 @@ html, body {
   padding: 0;
   font-size: 18px;
   font-family: 'Arial';
+
+  &:fullscreen {
+    background-color: yellow;
+  }
 }
 
 #welcome-screen {
@@ -23,8 +27,15 @@ html, body {
   transform: translateX(-100%) translateY(-100%) rotate(360deg);
   transition: all ease 1s;
 
+  img {
+    width: 50%;
+    &.animated {
+      animation: 1s ease 0s infinite alternate gift;
+    }
+  }
+
   button#start {
-    opacity: 1;
+
   }
 
   &.show {
@@ -48,16 +59,24 @@ html, body {
 
 #message {
   position: absolute;
-  width: 90%;
-  top: 60px;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
   background-color: #fff;
   z-index: 200;
-  transform: translateX(5%) translateY(-200%);
+  transform: translateX(0) translateY(-200%);
   padding: 20px;
-  border-radius: 10px;
   transition: all ease 0.5s;
   &.show {
-    transform: translateX(5%) translateY(0);
+    transform: translateX(0) translateY(0);
+  }
+  button#message-ok {
+    opacity: 1;
   }
 }
 
@@ -73,10 +92,73 @@ html, body {
   display: none;
 }
 
+#player {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 30px;
+  display: none;
+
+  button {
+    display: none;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    img {
+      width: 20px;
+      height: 20px;
+    }
+    &.show {
+      display: flex;
+    }
+  }
+
+  button#play {
+
+  }
+
+  button#stop {
+
+  }
+
+}
+
+#fullscreen {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  z-index: 500;
+  button {
+    width: 50vw;
+    height: 50vw;
+    background-color: #ff4f6a;
+    font-size: 22px;
+    text-transform: uppercase;
+    line-height: 40px;
+    animation: 1s ease 0s infinite alternate scaled;
+    &.soft_hide {
+      animation: 1s ease soft_hide forwards;
+    }
+  }
+  &.show{
+    display: flex;
+  }
+}
+
 button {
-  opacity: 0;
   font-size: 18px;
-  background-color: blue;
   width: 100%;
   height: 50px;
   border: none;
@@ -131,4 +213,33 @@ article {
 
 
 
+}
+
+
+// Animation
+@keyframes gift {
+  from {
+    transform: scale(1.4) translateY(20%);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes soft_hide {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scaled {
+  from {
+    transform: scale(1.2);
+  }
+  to {
+    transform: scale(0.8);
+  }
 }

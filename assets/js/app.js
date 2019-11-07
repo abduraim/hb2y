@@ -6,11 +6,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
             question: 'test1',
             answer: '123',
             hint: 'hint 1',
+            successMessage: 'Congratulations!111',
         },
         {
             question: 'test2',
             answer: '345',
             hint: 'hint 2',
+            successMessage: 'Congratulations!222',
         }
     ];
 
@@ -18,15 +20,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         constructor() {
 
-            this.app = document.getElementsByTagName('body')[0];
+            this.app = document.getElementById('app');
 
             this.currentStep = 1;
 
-            this.StepsInfo = Steps;
+            this.FullscreenControl = new FullscreenControl();
+
+            this.Steps = Steps;
 
             this.CommonTimer = new CommonTimer();
 
             this.StepFrame = new StepFrame();
+
+            this.MessageBox = new MessageBox();
+
+            this.Player = new Player();
 
             this.init();
 
@@ -39,6 +47,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
             let self = this;
 
             this.app.addEventListener('success', function () {
+
+                self.showSuccessMessage();
 
                 self.currentStep ++;
                 self.StepFrame.showStep(self.currentStep);
@@ -55,18 +65,27 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             this.welcomeScreen = document.getElementById('welcome-screen');
 
-            this.startBtn = document.getElementById('start');
+            this.giftImg = this.welcomeScreen.querySelector('img');
 
-            this.startBtn.addEventListener('click', function () {
+            this.giftImg.addEventListener('click', function () {
                 self.welcomeScreen.classList.remove('show');
+                self.Player.play();
                 self.startGame();
             });
+
+            setTimeout(function () {
+                self.giftImg.classList.add('animated');
+            }, 2000);
 
         }
 
         startGame() {
             this.CommonTimer.start();
             this.StepFrame.showStep(this.currentStep);
+        }
+
+        showSuccessMessage() {
+
         }
 
 
@@ -105,6 +124,36 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             return minutes + ':' + seconds;;
         }
+    }
+
+    class MessageBox {
+
+        constructor() {
+            this.container = document.getElementById('message');
+            this.message = this.container.querySelector('.message');
+            this.okBtn = this.container.querySelector('#message-ok')
+            this.init();
+        }
+
+        init() {
+            let self = this;
+            this.okBtn.addEventListener('click', function () {
+                self.hide();
+            });
+        }
+
+        setMessage(message) {
+            this.message.innerHTML = message;
+        }
+
+        show() {
+            this.container.classList.add('show');
+        }
+
+        hide() {
+            this.container.classList.remove('show');
+        }
+
     }
 
     class StepFrame {
@@ -165,6 +214,103 @@ document.addEventListener("DOMContentLoaded", function(event) {
             });
 
         }
+
+    }
+
+    class Player {
+
+        constructor() {
+            this.playBtn = document.getElementById('play');
+            this.stopBtn = document.getElementById('stop');
+            this.musicDasha = new Audio('dasha.mp3');
+            this.musicDasha.currentTime = 1;
+            this.init();
+        }
+
+        init() {
+            let self = this;
+            this.playBtn.addEventListener('click', function () {
+                self.play();
+                self.showStopBtn();
+                self.hidePlayBtn();
+            });
+            this.stopBtn.addEventListener('click', function () {
+                self.stop()
+                self.showPlayBtn();
+                self.hideStopBtn();
+            });
+        }
+
+        play() {
+            this.musicDasha.play();
+        }
+
+        pause() {
+            this.musicDasha.pause();
+        }
+
+        stop() {
+            this.musicDasha.pause();
+            this.musicDasha.currentTime = 1;
+        }
+
+        showPlayBtn() {
+            this.playBtn.classList.add('show');
+        }
+
+        hidePlayBtn() {
+            this.playBtn.classList.remove('show');
+        }
+
+        showStopBtn() {
+            this.stopBtn.classList.add('show');
+        }
+
+        hideStopBtn() {
+            this.stopBtn.classList.remove('show');
+        }
+
+        isPlaying() {
+            return !this.musicDasha.paused;
+        }
+
+    }
+
+    class FullscreenControl {
+
+        constructor() {
+            this.container = document.getElementById('fullscreen');
+            this.btn = this.container.querySelector('button');
+            let self = this;
+            this.btn.addEventListener('click', function () {
+                self.launchFullScreen(document.documentElement);
+                self.btn.classList.add('soft_hide');
+                setTimeout(function () {
+                    self.container.classList.remove('show');
+                }, 1000);
+            })
+        }
+
+        launchFullScreen(element) {
+            if(element.requestFullScreen) {
+                element.requestFullScreen();
+            } else if(element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if(element.webkitRequestFullScreen) {
+                element.webkitRequestFullScreen();
+            }
+        }
+
+        cancelFullscreen() {
+            if(document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if(document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if(document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+        }
+
 
     }
 
@@ -234,6 +380,36 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 
     new Game(Steps);
+
+
+
+
+
+    var audio = new Audio('dasha.mp3');
+    //audio.play();
+
+
+    var elem = document.getElementById("app");
+
+    /* When the openFullscreen() function is executed, open the video in fullscreen.
+    Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
+    // function openFullscreen() {
+    //     if (elem.requestFullscreen) {
+    //         elem.requestFullscreen();
+    //     } else if (elem.mozRequestFullScreen) { /* Firefox */
+    //         elem.mozRequestFullScreen();
+    //     } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+    //         elem.webkitRequestFullscreen();
+    //     } else if (elem.msRequestFullscreen) { /* IE/Edge */
+    //         elem.msRequestFullscreen();
+    //     }
+    // }
+    //
+    // document.getElementById('fullscreen').addEventListener('click', function () {
+    //     console.log('click');
+    //     openFullscreen();
+    // });
+
 
     // let frames = document.getElementsByClassName('frame');
     //
