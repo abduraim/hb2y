@@ -1,20 +1,57 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 
+
+
     const Steps = [
         {},
         {
-            question: 'test1',
-            answer: '123',
-            hint: 'hint 1',
-            successMessage: 'Congratulations!111',
+            question: 'Итак, твое первое задание: Искать ответ нужно там, где ты готовишь мою любимую лапшу, ответ будет в конверте рядом с вилкой и ножом.',
+            answer: '258',
+            hint: 'В ящике стола, на кухне',
+            successMessage: 'Дашулька, спасибо за отличные и вкусных блюда, которые ты для нас готовишь! Твой подарок в столе, открой дверцы.',
+            timeOver: 15,
         },
         {
-            question: 'test2',
-            answer: '345',
-            hint: 'hint 2',
-            successMessage: 'Congratulations!222',
-        }
+            question: 'Следующий конверт ты найдешь там, куда попадают твои носочки после стирки.',
+            answer: '157',
+            hint: 'После того, как они высохли',
+            successMessage: 'Спасибо за чистоту и порядок, которые ты для нас поддерживаешь! Твой следующий подарок на антресоли!',
+            timeOver: 15,
+        },
+        {
+            question: 'Поторопись к следующему конверту, он находится у хорошего кучерявого человека, живущего по соседству.',
+            answer: '333',
+            hint: 'это Ирина',
+            successMessage: 'Спасибо за твое общение, за новости и идеи, которыми ты делишься! Подарок в шкафу (в общем коридоре)',
+            timeOver: 15,
+        },
+        {
+            question: 'Следующий конверт находится там, где ты поддерживаешь жизнь тем, кого дарят твои клиенты любимым людям.',
+            answer: '555',
+            hint: 'Это цветы, которые ты выращиваешь',
+            successMessage: 'Спасибо за красоту, которую ты приносишь в этот мир, подарок ищи в шкафу ванной комнаты.',
+            timeOver: 15,
+        },
+        {
+            question: 'Итак, последнее задание. Ответ прячется в мешке набитом гусиными волосами.',
+            answer: '369',
+            hint: 'Это подушка',
+            successMessage: 'Спасибо за любовь и ласку, которыми ты нас согреваешь! Твой подарок под матрасом.',
+            timeOver: 15,
+        },
     ];
+    const Setup = {
+        debug: true,
+        sounds: {
+            'dasha': '/assets/sounds/dasha.mp3',
+            'applause': '/assets/sounds/applause.mp3',
+            'fireworks': '/assets/sounds/fireworks.mp3',
+            'alarm': '/assets/sounds/alarm.mp3',
+            'tick': '/assets/sounds/tick.mp3',
+        }
+    };
+
+
 
     class Game {
 
@@ -24,28 +61,78 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             this.currentStep = 1;
 
-            this.FullscreenControl = new FullscreenControl();
+            // Screens
+            this.loadingScreen = document.getElementById('loading');
+            this.pyroScreen = document.getElementById('pyro');
+            this.welcomeScreen = document.getElementById('welcome');
 
-            this.Steps = Steps;
+
+
+            // Buttons
+            this.hintBtn = document.getElementById('hint-btn');
+
+
+
+
+
+            this.FullscreenControl = new FullscreenControl();
+            this.Hint = new Hint();
+
 
             this.CommonTimer = new CommonTimer();
 
             this.StepFrame = new StepFrame();
 
-            this.MessageBox = new MessageBox();
+            //this.MessageBox = new MessageBox();
 
-            this.Player = new Player();
+            this.musicDasha = new Player(Setup.sounds.dasha);
 
-            this.init();
 
-            this.startInit();
+
+
+            // Bind Events
+            this.initControls();
+            this.initEvents();
+
+            // Hide loading before loading
+            this.hideLoading();
 
         }
 
-        init() {
-
+        // Init Controls
+        initControls() {
             let self = this;
 
+            this.hintBtn.addEventListener('click', function () {
+                self.Hint.show(self.currentStep);
+            });
+        }
+
+        // Bing Events
+        initEvents() {
+            let self = this;
+
+            // Fullscreen Done
+            this.app.addEventListener('fullscreenDone', function () {
+
+                let timeOut = textAnimation(self.welcomeScreen.querySelector('p'), 40);
+
+                let giftImg = self.welcomeScreen.querySelector('img');
+
+                setTimeout(function () {
+                    giftImg.classList.add('show');
+                }, timeOut);
+
+                giftImg.addEventListener('click', function () {
+                    self.welcomeScreen.classList.remove('show');
+                    self.startGame();
+                })
+
+
+
+            });
+
+            // Quest Done
             this.app.addEventListener('success', function () {
 
                 self.showSuccessMessage();
@@ -57,29 +144,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             });
 
-        }
+            // Timer
+            this.app.addEventListener('failTimer', function () {
 
-        startInit() {
+                self.hintBtn.classList.add('show');
 
-            let self = this;
+                console.log('fail timer');
 
-            this.welcomeScreen = document.getElementById('welcome-screen');
-
-            this.giftImg = this.welcomeScreen.querySelector('img');
-
-            this.giftImg.addEventListener('click', function () {
-                self.welcomeScreen.classList.remove('show');
-                self.Player.play();
-                self.startGame();
             });
 
-            setTimeout(function () {
-                self.giftImg.classList.add('animated');
-            }, 2000);
-
         }
 
+        // Start The Game!
         startGame() {
+            if (!Setup.debug) {
+                this.musicDasha.play();
+            }
             this.CommonTimer.start();
             this.StepFrame.showStep(this.currentStep);
         }
@@ -88,10 +168,76 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         }
 
+        //Loading
+        showLoading() {
+            this.loadingScreen.classList.add('show');
+        }
+        hideLoading() {
+            this.loadingScreen.classList.remove('show');
+        }
 
+        //Pyro
+        showPyro() {
+            this.pyroScreen.classList.add('show');
+        }
+        hidePyro() {
+            this.pyroScreen.classList.remove('show');
+        }
+        volleyPyro() {
+            let self = this;
+            this.showPyro();
+            setTimeout(function () {
+                self.hidePyro();
+            }, 3000);
+        }
 
     }
 
+    // Fullscreen Class
+    class FullscreenControl {
+
+        constructor() {
+            this.app = document.getElementById('app');
+            this.container = document.getElementById('fullscreen');
+            this.container.classList.add('show');
+            this.btn = this.container.querySelector('button');
+            this.fullscreenDone = new Event('fullscreenDone');
+            let self = this;
+            this.btn.addEventListener('click', function () {
+                if (!Setup.debug) {
+                    self.launchFullScreen(document.documentElement);
+                }
+                self.btn.classList.add('soft_hide');
+                setTimeout(function () {
+                    self.container.classList.remove('show');
+                    self.app.dispatchEvent(self.fullscreenDone);
+                }, 1000);
+            })
+        }
+
+        launchFullScreen(element) {
+            if(element.requestFullScreen) {
+                element.requestFullScreen();
+            } else if(element.mozRequestFullScreen) {
+                element.mozRequestFullScreen();
+            } else if(element.webkitRequestFullScreen) {
+                element.webkitRequestFullScreen();
+            }
+        }
+
+        cancelFullscreen() {
+            if(document.cancelFullScreen) {
+                document.cancelFullScreen();
+            } else if(document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if(document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen();
+            }
+        }
+
+    }
+
+    // CommonTime Class
     class CommonTimer {
 
         constructor() {
@@ -124,58 +270,46 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             return minutes + ':' + seconds;;
         }
-    }
-
-    class MessageBox {
-
-        constructor() {
-            this.container = document.getElementById('message');
-            this.message = this.container.querySelector('.message');
-            this.okBtn = this.container.querySelector('#message-ok')
-            this.init();
-        }
-
-        init() {
-            let self = this;
-            this.okBtn.addEventListener('click', function () {
-                self.hide();
-            });
-        }
-
-        setMessage(message) {
-            this.message.innerHTML = message;
-        }
-
-        show() {
-            this.container.classList.add('show');
-        }
-
-        hide() {
-            this.container.classList.remove('show');
-        }
 
     }
 
+    // QestStep Class
     class StepFrame {
 
         constructor() {
 
             this.text = document.getElementById('text');
             this.input = document.getElementById('answer-input');
-            this.answerBtn = document.getElementById('answer-btn');
-            this.message = document.getElementById('message');
+
+            this.successMessage = document.getElementById('success-message');
+            this.successMessageText = this.successMessage.querySelector('p#text-success-message');
+            this.nextQuestBtn = this.successMessage.querySelector('button#next-quest-btn');
+
             this.succesEvent = new Event('success');
 
         }
 
         showStep(stepNumber) {
 
-            this.app = document.getElementsByTagName('body')[0];
+            this.app = document.getElementById('app');
+            this.container = document.getElementById('quest');
+            this.container.classList.add('show');
             this.question = Steps[stepNumber].question;
             this.answer = Steps[stepNumber].answer;
-            this.hint = Steps[stepNumber].hint;
+            this.successMessageText.innerText = Steps[stepNumber].successMessage;
+
+            this.timerOver = Steps[stepNumber].timeOver;
+
+            this.Timer = new Timer(this.timerOver);
 
             this.text.innerText = this.question;
+
+            let timeOut = textAnimation(this.text, 40);
+            let self = this;
+            setTimeout(function () {
+                self.Timer.start();
+                self.input.classList.add('show');
+            }, timeOut);
 
             this.init();
         }
@@ -188,28 +322,29 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             this.input.addEventListener('input', function () {
 
-                if (this.value == self.answer) {
+                if (this.value.length == self.answer.length) {
 
-                    self.answerBtn.classList.add('show');
+                    if (this.value == self.answer) {
 
-                    self.answerBtn.focus();
+                        self.successMessage.classList.add('show');
 
-                    self.message.classList.add('show');
+                        console.log('right!');
 
-                    console.log('right!');
+                    } else {
 
-                } else {
+                        console.log('wrong...');
 
-                    console.log('wrong...');
+                    }
 
                 }
+
             });
 
-            this.answerBtn.addEventListener('click', function (event) {
+            this.nextQuestBtn.addEventListener('click', function () {
 
-                if (self.input.value == self.answer) {
-                    self.app.dispatchEvent(self.succesEvent);
-                }
+                self.successMessage.classList.remove('show');
+
+                self.app.dispatchEvent(self.succesEvent);
 
             });
 
@@ -217,13 +352,53 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     }
 
+
+
+
+
+
+    // class MessageBox {
+    //
+    //     constructor() {
+    //         this.container = document.getElementById('message');
+    //         this.message = this.container.querySelector('.message');
+    //         this.okBtn = this.container.querySelector('#message-ok')
+    //         this.init();
+    //     }
+    //
+    //     init() {
+    //         let self = this;
+    //         this.okBtn.addEventListener('click', function () {
+    //             self.hide();
+    //         });
+    //     }
+    //
+    //     setMessage(message) {
+    //         this.message.innerHTML = message;
+    //     }
+    //
+    //     show() {
+    //         this.container.classList.add('show');
+    //     }
+    //
+    //     hide() {
+    //         this.container.classList.remove('show');
+    //     }
+    //
+    // }
+
+
+
     class Player {
 
-        constructor() {
+        constructor(pathToFile, loop = false) {
             this.playBtn = document.getElementById('play');
             this.stopBtn = document.getElementById('stop');
-            this.musicDasha = new Audio('dasha.mp3');
-            this.musicDasha.currentTime = 1;
+
+
+            this.sound = new Audio(pathToFile);
+            this.sound.loop = loop;
+
             this.init();
         }
 
@@ -242,16 +417,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
 
         play() {
-            this.musicDasha.play();
+            this.sound.play();
         }
 
         pause() {
-            this.musicDasha.pause();
+            this.sound.pause();
         }
 
         stop() {
-            this.musicDasha.pause();
-            this.musicDasha.currentTime = 1;
+            this.sound.pause();
+            this.sound.currentTime = 0;
         }
 
         showPlayBtn() {
@@ -270,68 +445,44 @@ document.addEventListener("DOMContentLoaded", function(event) {
             this.stopBtn.classList.remove('show');
         }
 
-        isPlaying() {
-            return !this.musicDasha.paused;
+        isPlaying(name) {
+            return !this.sound.paused;
         }
 
     }
 
-    class FullscreenControl {
-
-        constructor() {
-            this.container = document.getElementById('fullscreen');
-            this.btn = this.container.querySelector('button');
-            let self = this;
-            this.btn.addEventListener('click', function () {
-                self.launchFullScreen(document.documentElement);
-                self.btn.classList.add('soft_hide');
-                setTimeout(function () {
-                    self.container.classList.remove('show');
-                }, 1000);
-            })
-        }
-
-        launchFullScreen(element) {
-            if(element.requestFullScreen) {
-                element.requestFullScreen();
-            } else if(element.mozRequestFullScreen) {
-                element.mozRequestFullScreen();
-            } else if(element.webkitRequestFullScreen) {
-                element.webkitRequestFullScreen();
-            }
-        }
-
-        cancelFullscreen() {
-            if(document.cancelFullScreen) {
-                document.cancelFullScreen();
-            } else if(document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if(document.webkitCancelFullScreen) {
-                document.webkitCancelFullScreen();
-            }
-        }
 
 
-    }
 
 
     class Timer {
 
-        constructor(container) {
+        constructor(timeOver) {
 
-            this.container = container;
-            this.availableSeconds = 5;
-            this.currentSeconds = 0;
+            this.app = document.getElementById('app');
+            this.container = document.getElementById('timer');
+            this.availableSeconds = timeOver;
+
+            this.showTimerValue();
+
+            this.soundTick = new Player(Setup.sounds.tick, true);
+            this.soundAlarm = new Player(Setup.sounds.alarm);
+
+            this.failEvent = new Event('failTimer');
 
             this.secondsToDanger = 10;
 
-            this.timerInit();
-
         }
 
-        timerInit() {
+        start() {
 
             let self = this;
+
+            this.container.classList.add('danger');
+
+            setTimeout(function () {
+                self.container.classList.remove('danger');
+            }, 800);
 
             this.timer = setInterval(function () {
                 self.availableSeconds --;
@@ -363,66 +514,71 @@ document.addEventListener("DOMContentLoaded", function(event) {
         checkDanger() {
             if (this.availableSeconds < this.secondsToDanger) {
                 this.container.classList.add('danger');
+                if (!this.soundTick.isPlaying()) {
+                    this.soundTick.play();
+                }
             }
         }
 
         checkTimeIsOver() {
             if (this.availableSeconds < 1) {
                 clearInterval(this.timer);
+                this.soundAlarm.play();
+                this.soundTick.stop();
+                this.app.dispatchEvent(this.failEvent);
             }
         }
 
     }
 
     class Hint {
+        constructor() {
+            this.container = document.getElementById('hint');
+            this.hintText = this.container.querySelector('p#hint-text');
+            this.closeBtn = this.container.querySelector('button#close-hint');
 
+            this.init();
+        }
+
+        init() {
+
+            let self = this;
+
+            this.closeBtn.addEventListener('click', function () {
+                self.hide();
+            })
+
+        }
+
+        show(stepNumber) {
+            this.hintText.innerText = Steps[stepNumber].hint;
+            this.container.classList.add('show');
+        }
+        hide() {
+            this.container.classList.remove('show');
+        }
     }
 
 
+    // Helpers
+    //Text
+    function textAnimation(element, speed) {
+        let text = element.innerText;
+        element.innerText = '';
+        let i = 0;
+        let timer = setInterval(function () {
+            if (i < text.length) {
+                element.append(text.charAt(i));
+                i++;
+            } else {
+                clearInterval(timer);
+            }
+        }, 40);
+        return speed * text.length;
+    }
+
+
+
     new Game(Steps);
-
-
-
-
-
-    var audio = new Audio('dasha.mp3');
-    //audio.play();
-
-
-    var elem = document.getElementById("app");
-
-    /* When the openFullscreen() function is executed, open the video in fullscreen.
-    Note that we must include prefixes for different browsers, as they don't support the requestFullscreen method yet */
-    // function openFullscreen() {
-    //     if (elem.requestFullscreen) {
-    //         elem.requestFullscreen();
-    //     } else if (elem.mozRequestFullScreen) { /* Firefox */
-    //         elem.mozRequestFullScreen();
-    //     } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
-    //         elem.webkitRequestFullscreen();
-    //     } else if (elem.msRequestFullscreen) { /* IE/Edge */
-    //         elem.msRequestFullscreen();
-    //     }
-    // }
-    //
-    // document.getElementById('fullscreen').addEventListener('click', function () {
-    //     console.log('click');
-    //     openFullscreen();
-    // });
-
-
-    // let frames = document.getElementsByClassName('frame');
-    //
-    // new Timer(document.getElementById('timer'));
-    //
-    // for (let i = 0; i < frames.length; i++) {
-    //
-    //     new Frame(frames[i]);
-    //
-    // }
-
-
-
-
 
 });

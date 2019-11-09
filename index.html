@@ -5,65 +5,86 @@
     <title>День рождения</title>
     <link rel="stylesheet" href="app.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="favicon.png" />
 </head>
 <body id="app">
 
-<div id="fullscreen" class="show">
-    <button>
-        Нажми <br> меня
-    </button>
-</div>
+    <article id="loading" class="show">
+        <div class="lds-heart"><div></div></div>
+    </article>
 
-<div id="player">
-    <button id="play" class="show">
-        <img src="assets/images/play-button.svg" alt="Play">
-    </button>
-    <button id="stop">
-        <img src="assets/images/stop-button.svg" alt="Stop">
-    </button>
-</div>
+    <article id="pyro">
+        <div class="pyro">
+            <div class="before"></div>
+            <div class="after"></div>
+        </div>
+    </article>
 
+    <article id="fullscreen">
+        <button class="show">
+            Нажми <br> меня
+        </button>
+    </article>
 
+    <article id="welcome" class="show">
 
+        <p>
+            Привет, Дашулька! Сегодня твой день рождения, а в день рождения принято получать подарки. Кликни на то, что ты хочешь получить.
+        </p>
 
-
-<div id="welcome-screen" class="show">
-
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi assumenda consequatur consequuntur, distinctio doloribus enim error ipsum libero minima natus nisi odio omnis perspiciatis, quae quia reiciendis sapiente sed sunt.
-    </p>
-
-    <img src="assets/images/gift.svg" alt="Подарок">
+        <img src="assets/images/gift.svg" alt="Подарок">
 
 
-</div>
+    </article>
 
-<div id="timer">
-    00:00
-</div>
+    <article id="hint">
 
-<div id="message">
-    <div class="message">
-        Message
+        <p id="hint-text"></p>
+
+        <button id="close-hint" class="show">Закрыть подсказку</button>
+
+    </article>
+
+    <article id="success-message">
+        <p id="text-success-message"></p>
+        <button id="next-quest-btn" class="show">К следующему заданию!</button>
+    </article>
+
+    <article id="quest">
+
+        <p id="text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa, esse eum explicabo fuga, itaque magni possimus quam quia quis repellendus sequi ut, veniam? Dignissimos error excepturi labore magnam vero voluptatum?</p>
+
+        <input type="number" id="answer-input">
+
+        <button id="hint-btn">Подсказка</button>
+
+    </article>
+
+
+    <div id="player">
+        <button id="play" class="show">
+            <img src="assets/images/play-button.svg" alt="Play">
+        </button>
+        <button id="stop">
+            <img src="assets/images/stop-button.svg" alt="Stop">
+        </button>
     </div>
-    <button id="message-ok">ok</button>
-</div>
 
-<div id="hint">
-    HINT
-</div>
 
-<article>
 
-    <p id="text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa, esse eum explicabo fuga, itaque magni possimus quam quia quis repellendus sequi ut, veniam? Dignissimos error excepturi labore magnam vero voluptatum?</p>
 
-    <input type="number" id="answer-input">
 
-    <button id="answer-btn">Button</button>
 
-    <button id="hint-btn">Hint</button>
 
-</article>
+    <div id="timer">
+        00:00
+    </div>
+
+
+
+
+
+
 
 <script src="./js/scripts.js"></script>
 
