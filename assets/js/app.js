@@ -5,31 +5,31 @@ document.addEventListener("DOMContentLoaded", function(event) {
     const Steps = [
         {},
         {
-            question: 'Итак, твое первое задание: Искать ответ нужно там, где ты готовишь мою любимую лапшу, ответ будет в конверте рядом с вилкой и ножом.',
+            question: 'Итак, твое первое задание. Искать конверт нужно там, где ты готовишь отличнейшую лапшу, он рядом с вилкой и ножом.',
             answer: '258',
-            hint: 'В ящике стола, на кухне',
+            hint: 'Конверт в ящике стола, на кухне',
             successMessage: 'Дашулька, спасибо за отличные и вкусных блюда, которые ты для нас готовишь! Твой подарок в столе, открой дверцы.',
-            timeOver: 15,
-        },
-        {
-            question: 'Следующий конверт ты найдешь там, куда попадают твои носочки после стирки.',
-            answer: '157',
-            hint: 'После того, как они высохли',
-            successMessage: 'Спасибо за чистоту и порядок, которые ты для нас поддерживаешь! Твой следующий подарок на антресоли!',
-            timeOver: 15,
-        },
-        {
-            question: 'Поторопись к следующему конверту, он находится у хорошего кучерявого человека, живущего по соседству.',
-            answer: '333',
-            hint: 'это Ирина',
-            successMessage: 'Спасибо за твое общение, за новости и идеи, которыми ты делишься! Подарок в шкафу (в общем коридоре)',
-            timeOver: 15,
+            timeOver: 2,
         },
         {
             question: 'Следующий конверт находится там, где ты поддерживаешь жизнь тем, кого дарят твои клиенты любимым людям.',
             answer: '555',
             hint: 'Это цветы, которые ты выращиваешь',
             successMessage: 'Спасибо за красоту, которую ты приносишь в этот мир, подарок ищи в шкафу ванной комнаты.',
+            timeOver: 30,
+        },
+        {
+            question: 'Поторопись к следующему конверту, он находится у хорошего кучерявого человека, живущего по соседству. Твой пароль - "Хочу халву ем, хочу пряники"',
+            answer: '333',
+            hint: 'Это Ирина',
+            successMessage: 'Спасибо за твое общение, за новости и идеи, которыми ты делишься! Подарок в шкафу (в общем коридоре)',
+            timeOver: 15,
+        },
+        {
+            question: 'Следующий конверт ты найдешь там, куда попадают твои носочки после стирки.',
+            answer: '157',
+            hint: 'После того, как они высохли',
+            successMessage: 'Спасибо за чистоту и порядок, которые ты для нас поддерживаешь! Твой следующий подарок в антресоли!',
             timeOver: 15,
         },
         {
@@ -48,7 +48,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
             'fireworks': '/assets/sounds/fireworks.mp3',
             'alarm': '/assets/sounds/alarm.mp3',
             'tick': '/assets/sounds/tick.mp3',
-        }
+        },
+        welcomeMessage: [
+            'Привет, Дашулька! Сегодня твой день рождения, а в день рождения принято получать подарки.',
+            'Добро пожаловать в приключение, Даша-путешественница! На твоём пути будут задания на поиск конвертов. В конвертах будет число, которое тебе нужно ввести. После этого ты узнаешь, где забрать подарок. Поехали?',
+        ],
     };
 
 
@@ -59,29 +63,32 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             this.app = document.getElementById('app');
 
-            this.currentStep = 1;
-
             // Screens
             this.loadingScreen = document.getElementById('loading');
             this.pyroScreen = document.getElementById('pyro');
-            this.welcomeScreen = document.getElementById('welcome');
 
 
 
             // Buttons
-            this.hintBtn = document.getElementById('hint-btn');
 
 
 
 
 
-            this.FullscreenControl = new FullscreenControl();
-            this.Hint = new Hint();
 
 
-            this.CommonTimer = new CommonTimer();
+            // Components
+            this.FullscreenComponent = new FullscreenComponent();
+            this.WelcomeComponent = new Welcome();
 
-            this.StepFrame = new StepFrame();
+            this.CommonTimerComponent = new CommonTimerComponent();
+
+            this.QuestComponent = new QuestComponent();
+
+
+
+
+
 
             //this.MessageBox = new MessageBox();
 
@@ -91,21 +98,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 
             // Bind Events
-            this.initControls();
             this.initEvents();
 
             // Hide loading before loading
             this.hideLoading();
 
-        }
-
-        // Init Controls
-        initControls() {
-            let self = this;
-
-            this.hintBtn.addEventListener('click', function () {
-                self.Hint.show(self.currentStep);
-            });
         }
 
         // Bing Events
@@ -115,41 +112,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
             // Fullscreen Done
             this.app.addEventListener('fullscreenDone', function () {
 
-                let timeOut = textAnimation(self.welcomeScreen.querySelector('p'), 40);
+                self.WelcomeComponent.show();
 
-                let giftImg = self.welcomeScreen.querySelector('img');
+            });
 
-                setTimeout(function () {
-                    giftImg.classList.add('show');
-                }, timeOut);
+            this.app.addEventListener('welcomeDone', function () {
 
-                giftImg.addEventListener('click', function () {
-                    self.welcomeScreen.classList.remove('show');
-                    self.startGame();
-                })
-
-
+                self.WelcomeComponent.hide();
+                self.QuestComponent.show();
 
             });
 
             // Quest Done
-            this.app.addEventListener('success', function () {
+            this.app.addEventListener('eventQuestSuccess', function () {
 
-                self.showSuccessMessage();
-
-                self.currentStep ++;
-                self.StepFrame.showStep(self.currentStep);
-
-                console.log('success event');
-
-            });
-
-            // Timer
-            this.app.addEventListener('failTimer', function () {
-
-                self.hintBtn.classList.add('show');
-
-                console.log('fail timer');
+                console.log('Game Over!!!');
 
             });
 
@@ -162,10 +139,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }
             this.CommonTimer.start();
             this.StepFrame.showStep(this.currentStep);
-        }
-
-        showSuccessMessage() {
-
         }
 
         //Loading
@@ -194,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 
     // Fullscreen Class
-    class FullscreenControl {
+    class FullscreenComponent {
 
         constructor() {
             this.app = document.getElementById('app');
@@ -238,7 +211,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 
     // CommonTime Class
-    class CommonTimer {
+    class CommonTimerComponent {
 
         constructor() {
             this.currentSeconds = 0;
@@ -274,9 +247,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
 
     // QestStep Class
-    class StepFrame {
+    class QuestComponent {
 
         constructor() {
+
+            this.app = document.getElementById('app');
+            this.container = document.getElementById('quest');
 
             this.text = document.getElementById('text');
             this.input = document.getElementById('answer-input');
@@ -285,36 +261,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
             this.successMessageText = this.successMessage.querySelector('p#text-success-message');
             this.nextQuestBtn = this.successMessage.querySelector('button#next-quest-btn');
 
-            this.succesEvent = new Event('success');
+            this.hintBtn = this.container.querySelector('button#hint-btn');
 
-        }
-
-        showStep(stepNumber) {
-
-            this.app = document.getElementById('app');
-            this.container = document.getElementById('quest');
-            this.container.classList.add('show');
-            this.question = Steps[stepNumber].question;
-            this.answer = Steps[stepNumber].answer;
-            this.successMessageText.innerText = Steps[stepNumber].successMessage;
-
-            this.timerOver = Steps[stepNumber].timeOver;
-
-            this.Timer = new Timer(this.timerOver);
-
-            this.text.innerText = this.question;
-
-            let timeOut = textAnimation(this.text, 40);
-            let self = this;
-            setTimeout(function () {
-                self.Timer.start();
-                self.input.classList.add('show');
-            }, timeOut);
+            this.succesEvent = new Event('eventQuestSuccess');
 
             this.init();
+
         }
 
         init() {
+
+            this.stepNumber = 1;
+
+            this.fillFields();
 
             let self = this;
 
@@ -326,9 +285,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
                     if (this.value == self.answer) {
 
-                        self.successMessage.classList.add('show');
-
-                        console.log('right!');
+                        self.rightAnswer();
 
                     } else {
 
@@ -340,18 +297,112 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             });
 
+            this.hintBtn.addEventListener('click', function () {
+                self.HintComponent.show();
+            });
+
             this.nextQuestBtn.addEventListener('click', function () {
 
                 self.successMessage.classList.remove('show');
 
-                self.app.dispatchEvent(self.succesEvent);
+                self.nextStep();
 
+            });
+
+            this.app.addEventListener('failTimer', function () {
+                self.hintBtn.classList.add('show');
             });
 
         }
 
+        rightAnswer() {
+
+            this.Timer.stop();
+
+            this.successMessage.classList.add('show');
+
+        }
+
+        nextStep() {
+            this.stepNumber++;
+            if (this.stepNumber >= Steps.length) {
+                this.app.dispatchEvent(this.succesEvent);
+            } else {
+                this.fillFields();
+                this.Timer.start();
+            }
+        }
+
+        fillFields() {
+            this.question = Steps[this.stepNumber].question;
+            this.text.innerText = this.question;
+            this.answer = Steps[this.stepNumber].answer;
+
+            this.successMessageText.innerText = Steps[this.stepNumber].successMessage;
+
+            this.timerOver = Steps[this.stepNumber].timeOver;
+            this.Timer = new Timer(this.timerOver);
+
+            this.hintText = Steps[this.stepNumber].hint;
+            this.HintComponent = new HintComponent(this.hintText);
+
+            this.input.value = '';
+            this.hintBtn.classList.remove('show');
+        }
+
+        show() {
+            this.container.classList.add('show');
+            this.input.classList.add('show');
+            this.Timer.start();
+        }
+
+
+
     }
 
+    // Welcome Messages
+    class Welcome {
+        constructor() {
+            this.app = document.getElementById('app');
+            this.container = document.getElementById('welcome');
+            this.appeartinBlock = this.container.querySelector('#welcome-text');
+            this.text = this.container.querySelector('#welcome-text > p');
+            this.nextBtn = this.container.querySelector('button#welcome-next-btn');
+            this.eventDone = new Event('welcomeDone');
+            this.init();
+        }
+
+        init() {
+
+            this.currentMessage = 0;
+            this.text.innerText = Setup.welcomeMessage[this.currentMessage];
+
+            let self = this;
+            this.nextBtn.addEventListener('click', function () {
+                self.nextMessage();
+            });
+        }
+
+        nextMessage() {
+            this.currentMessage++;
+            if (this.currentMessage >= Setup.welcomeMessage.length) {
+                this.app.dispatchEvent(this.eventDone);
+            } else {
+                this.text.innerText = Setup.welcomeMessage[this.currentMessage];
+            }
+        }
+
+        show() {
+            this.container.classList.add('show');
+            this.appeartinBlock.classList.add('show');
+            this.nextBtn.classList.add('show');
+        }
+
+        hide() {
+            this.container.classList.remove('show');
+        }
+    }
+    
 
 
 
@@ -494,6 +545,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }, 1000);
         }
 
+        stop() {
+            clearInterval(this.timer);
+        }
+
         showTimerValue() {
 
             let minutes = Math.floor(this.availableSeconds / 60);
@@ -531,27 +586,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     }
 
-    class Hint {
-        constructor() {
+    class HintComponent {
+        constructor(message) {
             this.container = document.getElementById('hint');
             this.hintText = this.container.querySelector('p#hint-text');
             this.closeBtn = this.container.querySelector('button#close-hint');
+
+            this.hintText.innerText = message;
 
             this.init();
         }
 
         init() {
-
             let self = this;
-
             this.closeBtn.addEventListener('click', function () {
                 self.hide();
             })
-
         }
 
-        show(stepNumber) {
-            this.hintText.innerText = Steps[stepNumber].hint;
+        show() {
             this.container.classList.add('show');
         }
         hide() {

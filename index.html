@@ -26,13 +26,15 @@
         </button>
     </article>
 
-    <article id="welcome" class="show">
+    <article id="welcome">
 
-        <p>
-            Привет, Дашулька! Сегодня твой день рождения, а в день рождения принято получать подарки. Кликни на то, что ты хочешь получить.
-        </p>
+        <div id="welcome-text" class="appearing">
+            <p>
+                Привет, Дашулька! Сегодня твой день рождения, а в день рождения принято получать подарки. Кликни на то, что ты хочешь получить.
+            </p>
+        </div>
 
-        <img src="assets/images/gift.svg" alt="Подарок">
+        <button id="welcome-next-btn">Далее</button>
 
 
     </article>
@@ -46,6 +48,10 @@
     </article>
 
     <article id="success-message">
+        <div class="pyro">
+            <div class="before"></div>
+            <div class="after"></div>
+        </div>
         <p id="text-success-message"></p>
         <button id="next-quest-btn" class="show">К следующему заданию!</button>
     </article>
