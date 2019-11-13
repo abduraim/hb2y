@@ -176,12 +176,19 @@ article {
 #welcome {
   z-index: 300;
   background-color: #fff;
+  background-image: url('/assets/images/01.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
   padding: 30px;
   transform: translateX(-100%) translateY(-100%) rotate(360deg);
   transition: all ease 1s;
 
   p {
     text-align: center;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
   }
 
   button#welcome-next-btn {
@@ -206,6 +213,14 @@ article {
   }
   button#hint-btn {
     margin-top: 10px;
+  }
+}
+
+#game-over {
+  z-index: 300;
+  background-color: #fff;
+  p {
+    text-align: center;
   }
 }
 
