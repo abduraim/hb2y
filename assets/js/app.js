@@ -379,6 +379,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             this.app.dispatchEvent(this.pauseCommonTimer);
 
             this.successMessage.classList.add('show');
+            this.successMessageText.focus();
 
             this.soundApplause.play();
             this.soundFireworks.play();
