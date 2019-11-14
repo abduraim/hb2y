@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 
 
-
     const Steps = [
         {},
         {
@@ -46,15 +45,30 @@ document.addEventListener("DOMContentLoaded", function(event) {
         },
     ];
     const Setup = {
-        debug: false,
+        debug: true,
         secondsToDanger: 10,
-        sounds: {
-            'dasha': '/assets/sounds/dasha.mp3',
-            'applause': '/assets/sounds/applause.mp3',
-            'fireworks': '/assets/sounds/fireworks.mp3',
-            'alarm': '/assets/sounds/alarm.mp3',
-            'tick': '/assets/sounds/tick.mp3',
-        },
+        sounds: [
+            {
+                name: 'dasha',
+                path: '/assets/sounds/dasha.mp3',
+            },
+            {
+                name: 'applause',
+                path: '/assets/sounds/applause.mp3',
+            },
+            {
+                name: 'fireworks',
+                path: '/assets/sounds/fireworks.mp3',
+            },
+            {
+                name: 'alarm',
+                path: '/assets/sounds/alarm.mp3',
+            },
+            {
+                name: 'tick',
+                path: '/assets/sounds/tick.mp3',
+            },
+        ],
         welcomeMessage: [
             {
                 message: 'Привет, Дашулька! Сегодня твой день рождения, а в день рождения принято получать подарки.',
@@ -66,6 +80,112 @@ document.addEventListener("DOMContentLoaded", function(event) {
             },
         ],
     };
+
+
+    let imagesLoaded = false;
+    let soundsLoaded = false;
+
+    document.addEventListener('assetIsLoaded', function (entity) {
+        console.log(entity.source, ' is loaded');
+
+        if (entity.source == 'sounds') {
+            soundsLoaded = true;
+        }
+
+        if (entity.source == 'images') {
+            imagesLoaded = true;
+        }
+
+        if (soundsLoaded && imagesLoaded) {
+            document.dispatchEvent(new Event('allAssetsIsLoaded'));
+        }
+
+
+    });
+
+
+    function preloadBackgroundImages(imagesArr) {
+
+        let app = document.getElementById('app');
+        let countOfLoaded = 0;
+        let commonCount = imagesArr.length;
+
+        function imageIsLoaded() {
+            countOfLoaded++;
+            if (countOfLoaded >= commonCount) {
+                let event = new Event('assetIsLoaded');
+                event.source = 'images';
+                document.dispatchEvent(event);
+            }
+        }
+
+        function imagePreloader(url) {
+            let img = new Image();
+            img.src = url;
+            img.onload = function () {
+                imageIsLoaded();
+            }
+            if (img.complete) img.onload();
+        }
+
+        for (let i = 0; i < imagesArr.length; i++) {
+
+            let element = imagesArr[i];
+
+            let style =
+                element.currentStyle || window.getComputedStyle(element, false),
+                url = style
+                    .backgroundImage
+                    .slice(4, -1)
+                    .replace(/"/g, "");
+
+            imagePreloader(url);
+
+        }
+
+    }
+
+    let preloadingImagesElements = document.getElementsByClassName('preload-background');
+
+    preloadBackgroundImages(preloadingImagesElements);
+
+    const Sounds = [];
+
+    for (let i = 0; i < Setup.sounds.length; i++) {
+        Sounds.push({name: Setup.sounds[i].name, sound: new Audio(Setup.sounds[i].path)});
+    }
+
+    console.log(Sounds);
+
+
+    function soundsPreloader(soundsArr) {
+
+        //let app = document.getElementById('app');
+        let countOfLoaded = 0;
+        let commonCount = soundsArr.length;
+
+        function soundIsLoaded() {
+            countOfLoaded++;
+            if (countOfLoaded >= commonCount) {
+                let event = new Event('assetIsLoaded');
+                event.source = 'sounds';
+                document.dispatchEvent(event);
+            }
+        }
+
+        for (let i = 0; i < soundsArr.length; i++) {
+            soundsArr[i].sound.addEventListener('canplaythrough', function () {
+                soundIsLoaded();
+            })
+        }
+
+    }
+
+    soundsPreloader(Sounds);
+
+
+
+
 
 
 
@@ -93,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             this.initEvents();
 
             // Hide loading before loading
-            this.hideLoading();
+            //this.hideLoading();
 
         }
 
@@ -136,6 +256,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
             // Continue Common Timer
             this.app.addEventListener('continueTimer', function () {
                 self.CommonTimerComponent.continue();
+            });
+
+            // App is Loaded
+            document.addEventListener('allAssetsIsLoaded', function () {
+                self.hideLoading();
             });
 
         }
@@ -610,7 +735,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
 
     }
-
 
 
 
