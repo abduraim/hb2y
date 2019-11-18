@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function(event) {
 
 
+
     const Steps = [
         {},
         {
@@ -8,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             answer: '258',
             hint: 'Конверт в ящике стола, на кухне',
             successMessage: 'Дашулька, спасибо за отличные и вкусных блюда, которые ты для нас готовишь! Твой подарок в столе, открой дверцы.',
-            timeOver: 2,
+            timeOver: 15,
             nextBtnText: 'К следующему подарку!',
         },
         {
@@ -17,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             hint: 'Это цветы, которые ты выращиваешь',
             successMessage: 'Спасибо за красоту, которую ты приносишь в этот мир, подарок ищи в шкафу ванной комнаты.',
             timeOver: 30,
-            nextBtnText: 'Next',
+            nextBtnText: 'Класс! Дальше',
         },
         {
             question: 'Поторопись к следующему конверту, он находится у хорошего кучерявого человека, живущего по соседству. Твой пароль - "Хочу халву ем, хочу пряники"',
@@ -25,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             hint: 'Это Ирина',
             successMessage: 'Спасибо за твое общение, за новости и идеи, которыми ты делишься! Подарок в шкафу (в общем коридоре)',
             timeOver: 15,
-            nextBtnText: 'Next',
+            nextBtnText: 'Еще!',
         },
         {
             question: 'Следующий конверт ты найдешь там, куда попадают твои носочки после стирки.',
@@ -33,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             hint: 'После того, как они высохли',
             successMessage: 'Спасибо за чистоту и порядок, которые ты для нас поддерживаешь! Твой следующий подарок в антресоли!',
             timeOver: 15,
-            nextBtnText: 'Next',
+            nextBtnText: 'Ура. Дальше!',
         },
         {
             question: 'Итак, последнее задание. Ответ прячется в мешке набитом гусиными волосами.',
@@ -41,160 +42,150 @@ document.addEventListener("DOMContentLoaded", function(event) {
             hint: 'Это подушка',
             successMessage: 'Спасибо за любовь и ласку, которыми ты нас согреваешь! Твой подарок под матрасом.',
             timeOver: 15,
-            nextBtnText: 'Next',
+            nextBtnText: 'И-и-и...',
         },
     ];
+
     const Setup = {
         debug: true,
         secondsToDanger: 10,
-        sounds: [
-            {
-                name: 'dasha',
-                path: '/assets/sounds/dasha.mp3',
-            },
-            {
-                name: 'applause',
-                path: '/assets/sounds/applause.mp3',
-            },
-            {
-                name: 'fireworks',
-                path: '/assets/sounds/fireworks.mp3',
-            },
-            {
-                name: 'alarm',
-                path: '/assets/sounds/alarm.mp3',
-            },
-            {
-                name: 'tick',
-                path: '/assets/sounds/tick.mp3',
-            },
-        ],
+        sounds: {
+            dasha: '/assets/sounds/dasha.mp3',
+            applause: '/assets/sounds/applause.mp3',
+            fireworks: '/assets/sounds/fireworks.mp3',
+            alarm: '/assets/sounds/alarm.mp3',
+            tick: '/assets/sounds/tick.mp3',
+        },
         welcomeMessage: [
             {
-                message: 'Привет, Дашулька! Сегодня твой день рождения, а в день рождения принято получать подарки.',
-                btnText: 'ЮЮЮ',
+                message: 'Привет, Дашулька! Сегодня твой день рождения, а в день рождения принято получать подарки. Мой подарок - это игра, в которой тебе нужно будет найти подарки. Итак, возвращайся в комнату, а затем нажми Далее...',
+                btnText: 'Далее',
             },
             {
-                message: 'Добро пожаловать в приключение, Даша-путешественница! На твоём пути будут задания на поиск конвертов. В конвертах будет число, которое тебе нужно ввести. После этого ты узнаешь, где забрать подарок. Поехали?',
-                btnText: 'VVV',
+                message: 'Добро пожаловать в приключение, Даша-путешественница! На твоём пути будут задания на поиск конвертов. В конвертах будет число, которое тебе нужно ввести. После этого ты узнаешь, где забрать подарок. Существуют подсказки - они появляются тогда, когда заканчивается время. Поехали?',
+                btnText: 'Поехали!',
             },
         ],
     };
 
+    let Sounds = {};
 
-    let imagesLoaded = false;
-    let soundsLoaded = false;
 
-    document.addEventListener('assetIsLoaded', function (entity) {
-        console.log(entity.source, ' is loaded');
 
-        if (entity.source == 'sounds') {
-            soundsLoaded = true;
+    // Preloader
+    class Preloader {
+
+        constructor() {
+
+            this.imagesIsLoaded = false;
+            this.soundsIsLoaded = false;
+
+            this.preloadBackgroundImages();
+            this.preloadSounds();
+
+            document.addEventListener('assetIsLoaded', function (event) {
+
+                if (event.source == 'images') {
+                    this.imagesIsLoaded = true;
+                }
+
+                if (event.source == 'sounds') {
+                    this.soundsIsLoaded = true;
+                }
+
+                if (this.imagesIsLoaded && this.soundsIsLoaded) {
+                    document.dispatchEvent(new Event('allAssetsIsLoaded'));
+                }
+
+            });
+
         }
 
-        if (entity.source == 'images') {
-            imagesLoaded = true;
+        preloadBackgroundImages() {
+
+            this.preloadBackgroundImagesElementsArr = document.getElementsByClassName('preload-background');
+
+            this.totalAmountOfImages = this.preloadBackgroundImagesElementsArr.length;
+            this.currentAmountOfLoadedImages = 0;
+
+            for (let i = 0; i < this.totalAmountOfImages; i++) {
+
+                let element = this.preloadBackgroundImagesElementsArr[i];
+
+                let style =
+                    element.currentStyle || window.getComputedStyle(element, false),
+                    url = style
+                        .backgroundImage
+                        .slice(4, -1)
+                        .replace(/"/g, "");
+
+                this.imagePreloader(url);
+
+            }
+
         }
 
-        if (soundsLoaded && imagesLoaded) {
-            document.dispatchEvent(new Event('allAssetsIsLoaded'));
+        imagePreloader(url) {
+            let self = this;
+            let img = new Image();
+            img.src = url;
+            img.onload = function () {
+                self.imageIsLoaded();
+            }
+            if (img.complete) img.onload();
         }
 
-
-    });
-
-
-    function preloadBackgroundImages(imagesArr) {
-
-        let app = document.getElementById('app');
-        let countOfLoaded = 0;
-        let commonCount = imagesArr.length;
-
-        function imageIsLoaded() {
-            countOfLoaded++;
-            if (countOfLoaded >= commonCount) {
+        imageIsLoaded() {
+            this.currentAmountOfLoadedImages++;
+            if (this.currentAmountOfLoadedImages >= this.totalAmountOfImages) {
                 let event = new Event('assetIsLoaded');
                 event.source = 'images';
                 document.dispatchEvent(event);
             }
         }
 
-        function imagePreloader(url) {
-            let img = new Image();
-            img.src = url;
-            img.onload = function () {
-                imageIsLoaded();
+        preloadSounds() {
+
+            let self = this;
+
+            this.preloadSoundsArr = Setup.sounds;
+
+            this.totalAmountOfSounds = Object.keys(Setup.sounds).length;
+            this.currentAmountOfLoadedSounds = 0;
+
+            let tempSounds = {};
+
+            for (let name in Setup.sounds) {
+
+                tempSounds[name] = new Audio(Setup.sounds[name]);
+
+                tempSounds[name].addEventListener('canplaythrough', function () {
+                    self.soundIsLoaded();
+                });
+
             }
-            if (img.complete) img.onload();
-        }
 
-        for (let i = 0; i < imagesArr.length; i++) {
-
-            let element = imagesArr[i];
-
-            let style =
-                element.currentStyle || window.getComputedStyle(element, false),
-                url = style
-                    .backgroundImage
-                    .slice(4, -1)
-                    .replace(/"/g, "");
-
-            imagePreloader(url);
+            Sounds = tempSounds;
 
         }
 
-    }
-
-    let preloadingImagesElements = document.getElementsByClassName('preload-background');
-
-    preloadBackgroundImages(preloadingImagesElements);
-
-    const Sounds = [];
-
-    for (let i = 0; i < Setup.sounds.length; i++) {
-        Sounds.push({name: Setup.sounds[i].name, sound: new Audio(Setup.sounds[i].path)});
-    }
-
-    console.log(Sounds);
-
-
-    function soundsPreloader(soundsArr) {
-
-        //let app = document.getElementById('app');
-        let countOfLoaded = 0;
-        let commonCount = soundsArr.length;
-
-        function soundIsLoaded() {
-            countOfLoaded++;
-            if (countOfLoaded >= commonCount) {
+        soundIsLoaded() {
+            this.currentAmountOfLoadedSounds ++;
+            if (this.currentAmountOfLoadedSounds >= this.totalAmountOfSounds) {
                 let event = new Event('assetIsLoaded');
                 event.source = 'sounds';
                 document.dispatchEvent(event);
             }
         }
 
-        for (let i = 0; i < soundsArr.length; i++) {
-            soundsArr[i].sound.addEventListener('canplaythrough', function () {
-                soundIsLoaded();
-            })
-        }
-
     }
-
-    soundsPreloader(Sounds);
-
-
-
-
-
-
 
     // Main Component
     class Game {
 
         constructor() {
 
-            this.app = document.getElementById('app');
+            new Preloader();
 
             // Screens
             this.loadingScreen = document.getElementById('loading');
@@ -212,9 +203,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
             // Bind Events
             this.initEvents();
 
-            // Hide loading before loading
-            //this.hideLoading();
-
         }
 
         // Bing Events
@@ -222,14 +210,24 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             let self = this;
 
+            setTimeout(function () {
+                document.dispatchEvent(new Event('allAssetsIsLoaded'));
+            }, 3000);
+
+            // App is Loaded
+            document.addEventListener('allAssetsIsLoaded', function () {
+                self.hideLoading();
+            });
+
             // Fullscreen Done
-            this.app.addEventListener('fullscreenDone', function () {
+            document.addEventListener('fullscreenDone', function () {
 
                 self.WelcomeComponent.show();
 
             });
 
-            this.app.addEventListener('welcomeDone', function () {
+
+            document.addEventListener('welcomeDone', function () {
 
                 self.WelcomeComponent.hide();
                 self.QuestComponent.show();
@@ -238,7 +236,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             });
 
             // Quest Done
-            this.app.addEventListener('eventQuestSuccess', function () {
+            document.addEventListener('eventQuestSuccess', function () {
 
                 self.CommonTimerComponent.stop();
                 self.QuestComponent.hide();
@@ -249,18 +247,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
             });
 
             // Pause Common Timer
-            this.app.addEventListener('pauseTimer', function () {
+            document.addEventListener('pauseTimer', function () {
                 self.CommonTimerComponent.pause();
             });
 
             // Continue Common Timer
-            this.app.addEventListener('continueTimer', function () {
+            document.addEventListener('continueTimer', function () {
                 self.CommonTimerComponent.continue();
-            });
-
-            // App is Loaded
-            document.addEventListener('allAssetsIsLoaded', function () {
-                self.hideLoading();
             });
 
         }
@@ -276,7 +269,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     class FullscreenComponent {
 
         constructor() {
-            this.app = document.getElementById('app');
             this.container = document.getElementById('fullscreen');
             this.container.classList.add('show');
             this.btn = this.container.querySelector('button');
@@ -289,7 +281,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 self.btn.classList.add('soft_hide');
                 setTimeout(function () {
                     self.container.classList.remove('show');
-                    self.app.dispatchEvent(self.fullscreenDone);
+                    document.dispatchEvent(self.fullscreenDone);
                 }, 1000);
             })
         }
@@ -320,7 +312,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
     class Welcome {
 
         constructor() {
-            this.app = document.getElementById('app');
             this.container = document.getElementById('welcome');
             this.appeartinBlock = this.container.querySelector('#welcome-text');
             this.text = this.container.querySelector('#welcome-text > p');
@@ -338,8 +329,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             let self = this;
             this.nextBtn.addEventListener('click', function () {
+                if (self.currentMessage == 0) {
+                    if (!Setup.debug) {
+                        Sounds.dasha.play();
+                    }
+                }
+                if (self.currentMessage == 1) {
+                    Sounds.tick.volume = 0;
+                    Sounds.tick.loop = true;
+                    Sounds.tick.play();
+                    Sounds.alarm.volume = 0;
+                    Sounds.alarm.loop = true;
+                    Sounds.alarm.play();
+                }
                 self.nextMessage();
             });
+
         }
 
         fillFields() {
@@ -351,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             this.currentMessage++;
             if (this.currentMessage >= Setup.welcomeMessage.length) {
                 this.musicDasha.stop();
-                this.app.dispatchEvent(this.eventDone);
+                document.dispatchEvent(this.eventDone);
             } else {
                 if (this.currentMessage == 1) {
                     if (!Setup.debug) {
@@ -426,7 +431,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         constructor() {
 
-            this.app = document.getElementById('app');
             this.container = document.getElementById('quest');
 
             this.text = document.getElementById('text');
@@ -471,7 +475,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
                     } else {
 
-                        console.log('wrong...');
+                        self.input.classList.add('wrong');
+
+                        setTimeout(function () {
+                            self.input.classList.remove('wrong');
+                            self.input.value = '';
+                        }, 1500);
 
                     }
 
@@ -491,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             });
 
-            this.app.addEventListener('failTimer', function () {
+            document.addEventListener('failTimer', function () {
                 self.hintBtn.classList.add('show');
             });
 
@@ -501,26 +510,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             this.Timer.stop();
 
-            this.app.dispatchEvent(this.pauseCommonTimer);
+            document.dispatchEvent(this.pauseCommonTimer);
 
             this.successMessage.classList.add('show');
             this.successMessageText.focus();
 
-            this.soundApplause.play();
-            this.soundFireworks.play();
-
-            this.app.dispatchEvent(this.stopTickSound);
-            this.app.dispatchEvent(this.stopAlarmSound);
+            Sounds.applause.play();
+            Sounds.fireworks.play();
+            Sounds.tick.volume = 0;
+            Sounds.alarm.volume = 0;
 
         }
 
         nextStep() {
             this.stepNumber++;
             if (this.stepNumber >= Steps.length) {
-                this.app.dispatchEvent(this.succesEvent);
+                document.dispatchEvent(this.succesEvent);
             } else {
                 this.fillFields();
-                this.app.dispatchEvent(this.continueCommonTimer);
+                document.dispatchEvent(this.continueCommonTimer);
                 this.Timer.start();
             }
         }
@@ -562,26 +570,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         constructor(timeOver) {
 
-            this.app = document.getElementById('app');
             this.container = document.getElementById('timer');
             this.availableSeconds = timeOver;
 
             this.showTimerValue();
 
-            this.soundTick = new Player(Setup.sounds.tick, true);
-            this.soundAlarm = new Player(Setup.sounds.alarm);
-
             this.failEvent = new Event('failTimer');
 
             this.secondsToDanger = Setup.secondsToDanger;
-
-            let self = this;
-            this.app.addEventListener('stopTickSound', function () {
-                self.soundTick.stop();
-            });
-            this.app.addEventListener('stopAlarmSound', function () {
-                self.soundAlarm.stop();
-            });
 
         }
 
@@ -629,18 +625,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
         checkDanger() {
             if (this.availableSeconds < this.secondsToDanger) {
                 this.container.classList.add('danger');
-                if (!this.soundTick.isPlaying()) {
-                    this.soundTick.play();
-                }
+                Sounds.tick.volume = 1;
             }
         }
 
         checkTimeIsOver() {
             if (this.availableSeconds < 1) {
                 clearInterval(this.timer);
-                this.soundAlarm.play();
-                this.soundTick.stop();
-                this.app.dispatchEvent(this.failEvent);
+                Sounds.alarm.volume = 1;
+                Sounds.tick.volume = 0;
+                setTimeout(function () {
+                    Sounds.alarm.volume = 0;
+                }, 2000);
+                document.dispatchEvent(this.failEvent);
             }
         }
 

@@ -189,30 +189,60 @@ article {
     background-color: #fff;
     padding: 10px;
     border-radius: 5px;
+    z-index: 310;
   }
 
   button#welcome-next-btn {
     margin-top: 20px;
+    z-index: 310;
   }
 
   &.show {
     transform: translateX(0) translateY(0);
   }
 
+  &:before {
+    display: block;
+    content: '';
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(#fff, 0.3);
+    background: radial-gradient(circle, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+  }
+
 }
 
 #quest {
+  background-image: url('/assets/images/quest.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+
   p#text {
     text-align: center;
+    z-index: 410;
   }
   input {
     margin-top: 20px;
+    z-index: 410;
   }
   button#answer-btn {
-
+    z-index: 410;
   }
   button#hint-btn {
     margin-top: 10px;
+    z-index: 410;
+  }
+
+  &:before {
+    display: block;
+    content: '';
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(#fff, 0.3);
+    background: radial-gradient(circle, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
   }
 }
 
@@ -233,6 +263,9 @@ article {
   transform: translateX(-50%);
   z-index: 100;
   transition: all ease 0.8s;
+  background-color: #fff;
+  padding: 10px;
+  border-radius: 15px;
   &.danger {
     color: red;
     font-size: 40px;
@@ -371,6 +404,7 @@ button {
   border: none;
   opacity: 0;
   transition: opacity ease .3s;
+  background-color: greenyellow;
   &:focus {
     outline: none;
   }
@@ -399,7 +433,8 @@ input {
     opacity: 1;
   }
   &.wrong {
-    animation: wrong_input .5s 3;
+    background-color: red;
+    border: 2px solid red;
   }
 }
 
