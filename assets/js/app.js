@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     ];
 
     const Setup = {
-        debug: true,
+        debug: false,
         secondsToDanger: 10,
         sounds: {
             dasha: '/assets/sounds/dasha.mp3',
