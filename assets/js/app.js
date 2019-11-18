@@ -5,44 +5,44 @@ document.addEventListener("DOMContentLoaded", function(event) {
     const Steps = [
         {},
         {
-            question: 'Итак, твое первое задание. Искать конверт нужно там, где ты готовишь отличнейшую лапшу, он рядом с вилкой и ножом.',
+            question: "Итак, твое первое задание. Искать конверт нужно там, где ты&nbsp;готовишь отличнейшую лапшу, он&nbsp;рядом с&nbsp;вилкой и&nbsp;ножом.",
             answer: '258',
             hint: 'Конверт в ящике стола, на кухне',
-            successMessage: 'Дашулька, спасибо за отличные и вкусных блюда, которые ты для нас готовишь! Твой подарок в столе, открой дверцы.',
+            successMessage: "Дашулька, спасибо за&nbsp;отличные и&nbsp;вкусных&nbsp;блюда, которые ты для&nbsp;нас&nbsp;готовишь! Твой подарок в&nbsp;столе, открой&nbsp;дверцы.",
             timeOver: 15,
             nextBtnText: 'К следующему подарку!',
         },
         {
-            question: 'Следующий конверт находится там, где ты поддерживаешь жизнь тем, кого дарят твои клиенты любимым людям.',
+            question: "Следующий конверт находится там, где ты поддерживаешь жизнь тем, кого дарят твои клиенты любимым&nbsp;людям.",
             answer: '555',
             hint: 'Это цветы, которые ты выращиваешь',
-            successMessage: 'Спасибо за красоту, которую ты приносишь в этот мир, подарок ищи в шкафу ванной комнаты.',
+            successMessage: "Спасибо за&nbsp;красоту, которую ты приносишь в&nbsp;этот&nbsp;мир, подарок ищи в&nbsp;шкафу ванной комнаты.",
             timeOver: 30,
             nextBtnText: 'Класс! Дальше',
         },
         {
-            question: 'Поторопись к следующему конверту, он находится у хорошего кучерявого человека, живущего по соседству. Твой пароль - "Хочу халву ем, хочу пряники"',
+            question: 'Поторопись к&nbsp;следующему конверту, он&nbsp;находится у&nbsp;хорошего кучерявого человека, живущего по&nbsp;соседству. Твой пароль - "Хочу халву&nbsp;ем, хочу пряники!"',
             answer: '333',
             hint: 'Это Ирина',
-            successMessage: 'Спасибо за твое общение, за новости и идеи, которыми ты делишься! Подарок в шкафу (в общем коридоре)',
+            successMessage: 'Спасибо за&nbsp;твое общение, за&nbsp;новости и&nbsp;идеи, которыми ты&nbsp;делишься! Подарок в&nbsp;шкафу (в&nbsp;общем коридоре)',
             timeOver: 15,
             nextBtnText: 'Еще!',
         },
         {
-            question: 'Следующий конверт ты найдешь там, куда попадают твои носочки после стирки.',
+            question: 'Следующий конверт ты&nbsp;найдешь там, куда попадают твои носочки после стирки.',
             answer: '157',
             hint: 'После того, как они высохли',
-            successMessage: 'Спасибо за чистоту и порядок, которые ты для нас поддерживаешь! Твой следующий подарок в антресоли!',
+            successMessage: 'Спасибо за&nbsp;чистоту и&nbsp;порядок, которые ты для&nbsp;нас поддерживаешь! Твой следующий подарок в&nbsp;антресоли!',
             timeOver: 15,
             nextBtnText: 'Ура. Дальше!',
         },
         {
-            question: 'Итак, последнее задание. Ответ прячется в мешке набитом гусиными волосами.',
+            question: 'Итак, последнее задание. Ответ прячется в&nbsp;мешке набитом гусиными волосами.',
             answer: '369',
             hint: 'Это подушка',
-            successMessage: 'Спасибо за любовь и ласку, которыми ты нас согреваешь! Твой подарок под матрасом.',
+            successMessage: 'Это было послднее задание. На&nbsp;этом поздравление подходит к&nbsp;концу. Спасибо за&nbsp;любовь и&nbsp;ласку, которыми ты нас согреваешь! Целую, обнимаю и&nbsp;люблю&nbsp;тебя, Сладкая! Твой последний подарок под&nbsp;матрасом.',
             timeOver: 15,
-            nextBtnText: 'И-и-и...',
+            nextBtnText: '...',
         },
     ];
 
@@ -58,11 +58,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
         },
         welcomeMessage: [
             {
-                message: 'Привет, Дашулька! Сегодня твой день рождения, а в день рождения принято получать подарки. Мой подарок - это игра, в которой тебе нужно будет найти подарки. Итак, возвращайся в комнату, а затем нажми Далее...',
+                message: "Привет, Дашулька! Сегодня твой день&nbsp;рождения, а в день&nbsp;рождения принято получать подарки. Мой подарок - это&nbsp;игра, в&nbsp;которой тебе нужно будет найти&nbsp;подарки. Итак, возвращайся в&nbsp;комнату, а&nbsp;затем нажми Далее...",
                 btnText: 'Далее',
             },
             {
-                message: 'Добро пожаловать в приключение, Даша-путешественница! На твоём пути будут задания на поиск конвертов. В конвертах будет число, которое тебе нужно ввести. После этого ты узнаешь, где забрать подарок. Существуют подсказки - они появляются тогда, когда заканчивается время. Поехали?',
+                message: 'Добро пожаловать в&nbsp;приключение, Даша-путешественница! На твоём пути будут задания на поиск конвертов. В&nbsp;конвертах будет число, которое тебе нужно ввести. После этого ты&nbsp;узнаешь, где забрать подарок. Существуют подсказки - они появляются тогда, когда заканчивается время. Поехали?',
                 btnText: 'Поехали!',
             },
         ],
@@ -330,11 +330,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
             let self = this;
             this.nextBtn.addEventListener('click', function () {
                 if (self.currentMessage == 0) {
-                    if (!Setup.debug) {
-                        Sounds.dasha.play();
-                    }
+                    Sounds.dasha.play();
                 }
                 if (self.currentMessage == 1) {
+                    Sounds.dasha.pause();
                     Sounds.tick.volume = 0;
                     Sounds.tick.loop = true;
                     Sounds.tick.play();
@@ -348,14 +347,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
 
         fillFields() {
-            this.text.innerText = Setup.welcomeMessage[this.currentMessage].message;
+            this.text.innerHTML = Setup.welcomeMessage[this.currentMessage].message;
             this.nextBtn.innerText = Setup.welcomeMessage[this.currentMessage].btnText;
         }
 
         nextMessage() {
             this.currentMessage++;
             if (this.currentMessage >= Setup.welcomeMessage.length) {
-                this.musicDasha.stop();
                 document.dispatchEvent(this.eventDone);
             } else {
                 if (this.currentMessage == 1) {
@@ -535,10 +533,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         fillFields() {
             this.question = Steps[this.stepNumber].question;
-            this.text.innerText = this.question;
+            this.text.innerHTML = this.question;
             this.answer = Steps[this.stepNumber].answer;
 
-            this.successMessageText.innerText = Steps[this.stepNumber].successMessage;
+            this.successMessageText.innerHTML = Steps[this.stepNumber].successMessage;
             this.nextQuestBtn.innerText = Steps[this.stepNumber].nextBtnText;
 
             this.timerOver = Steps[this.stepNumber].timeOver;
