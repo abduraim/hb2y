@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             hint: 'Это подушка',
             successMessage: 'Это было послднее задание. На&nbsp;этом поздравление подходит к&nbsp;концу. Спасибо за&nbsp;любовь и&nbsp;ласку, которыми ты нас согреваешь! Целую, обнимаю и&nbsp;люблю&nbsp;тебя, Сладкая! Твой последний подарок под&nbsp;матрасом.',
             timeOver: 15,
-            nextBtnText: '...',
+            nextBtnText: 'Результаты',
         },
     ];
 
@@ -193,6 +193,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
             this.gameOverScreen = document.getElementById('game-over');
 
 
+            // Results
+            this.resultTime = this.gameOverScreen.querySelector('#result-time');
+            this.hintAmount = this.gameOverScreen.querySelector('#hint-amount');
+
+
             // Components
             this.FullscreenComponent = new FullscreenComponent();
             this.WelcomeComponent = new Welcome();
@@ -237,6 +242,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
             // Quest Done
             document.addEventListener('eventQuestSuccess', function () {
+
+                // load results
+                self.resultTime.innerText = self.CommonTimerComponent.getCommonTime();
+                self.hintAmount.innerText = self.QuestComponent.hintAmount;
 
                 self.CommonTimerComponent.stop();
                 self.QuestComponent.hide();
@@ -456,6 +465,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         init() {
 
             this.stepNumber = 1;
+            this.hintAmount = 0;
 
             this.fillFields();
 
@@ -478,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         setTimeout(function () {
                             self.input.classList.remove('wrong');
                             self.input.value = '';
-                        }, 1500);
+                        }, 1000);
 
                     }
 
@@ -487,6 +497,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             });
 
             this.hintBtn.addEventListener('click', function () {
+                self.hintAmount ++;
                 self.HintComponent.show();
             });
 
@@ -511,7 +522,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             document.dispatchEvent(this.pauseCommonTimer);
 
             this.successMessage.classList.add('show');
-            this.successMessageText.focus();
+            this.nextQuestBtn.focus();
 
             Sounds.applause.play();
             Sounds.fireworks.play();
