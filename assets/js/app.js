@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             answer: '258',
             hint: 'Конверт в ящике стола, на кухне',
             successMessage: "Дашулька, спасибо за&nbsp;отличные и&nbsp;вкусных&nbsp;блюда, которые ты для&nbsp;нас&nbsp;готовишь! Твой подарок в&nbsp;столе, открой&nbsp;дверцы.",
-            timeOver: 15,
+            timeOver: 60,
             nextBtnText: 'К следующему подарку!',
         },
         {
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             answer: '555',
             hint: 'Это цветы, которые ты выращиваешь',
             successMessage: "Спасибо за&nbsp;красоту, которую ты приносишь в&nbsp;этот&nbsp;мир, подарок ищи в&nbsp;шкафу ванной комнаты.",
-            timeOver: 30,
+            timeOver: 60,
             nextBtnText: 'Класс! Дальше',
         },
         {
@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             answer: '333',
             hint: 'Это Ирина',
             successMessage: 'Спасибо за&nbsp;твое общение, за&nbsp;новости и&nbsp;идеи, которыми ты&nbsp;делишься! Подарок в&nbsp;шкафу (в&nbsp;общем коридоре)',
-            timeOver: 15,
+            timeOver: 60,
             nextBtnText: 'Еще!',
         },
         {
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             answer: '157',
             hint: 'После того, как они высохли',
             successMessage: 'Спасибо за&nbsp;чистоту и&nbsp;порядок, которые ты для&nbsp;нас поддерживаешь! Твой следующий подарок в&nbsp;антресоли!',
-            timeOver: 15,
+            timeOver: 60,
             nextBtnText: 'Ура. Дальше!',
         },
         {
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             answer: '369',
             hint: 'Это подушка',
             successMessage: 'Это было послднее задание. На&nbsp;этом поздравление подходит к&nbsp;концу. Спасибо за&nbsp;любовь и&nbsp;ласку, которыми ты нас согреваешь! Целую, обнимаю и&nbsp;люблю&nbsp;тебя, Сладкая! Твой последний подарок под&nbsp;матрасом.',
-            timeOver: 15,
+            timeOver: 60,
             nextBtnText: 'Результаты',
         },
     ];
@@ -250,8 +250,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 self.CommonTimerComponent.stop();
                 self.QuestComponent.hide();
                 self.gameOverScreen.classList.add('show');
-                console.log('Game Over!!!');
-                console.log(self.CommonTimerComponent.getCommonTime());
 
             });
 
@@ -744,7 +742,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
 
 
-
+    // Start The Game!
     new Game();
 
 });
